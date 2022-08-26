@@ -117,8 +117,8 @@ class _BottomNavBarV2State extends State<ProfilePage> {
 
     List<Color> colorList = [
       const Color(0xffD95AF3),
-      const Color(0xff3EE094),
-      const Color(0xff3398F6),
+      const Color(0xFF6200E3),
+      const Color(0xff3398FC),
       const Color(0xffFA4A42),
       const Color(0xffFE9539)
     ];
@@ -154,7 +154,7 @@ class _BottomNavBarV2State extends State<ProfilePage> {
                 ],
               ),
                Padding(
-              padding: EdgeInsets.only(top:165.0),
+              padding: EdgeInsets.only(top:100.0),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -183,13 +183,13 @@ class _BottomNavBarV2State extends State<ProfilePage> {
                       child: PieChart(
                         dataMap: dataMap,
                         colorList: colorList,
-                        chartRadius: MediaQuery.of(context).size.width / 2,
+                        chartRadius: MediaQuery.of(context).size.width / 2.3,
                         animationDuration: const Duration(seconds: 5),
                         chartValuesOptions: const ChartValuesOptions(
                             showChartValues: true,
-                            showChartValuesOutside: true,
+                            showChartValuesOutside: false,
                             showChartValuesInPercentage: true,
-                            showChartValueBackground: false),
+                            showChartValueBackground: true),
 
                         gradientList: gradientList,
                       ),
@@ -197,7 +197,6 @@ class _BottomNavBarV2State extends State<ProfilePage> {
                   ],
                 ),
               ),),
-              //MyHomePage(),
               Positioned(
                 bottom: 0,
                 left: 0,

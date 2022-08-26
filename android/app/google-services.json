@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "412193976332",
+    "project_id": "chutta-app",
+    "storage_bucket": "chutta-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:412193976332:android:1305d2159e32b661487e29",
+        "android_client_info": {
+          "package_name": "com.example.chuta_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "412193976332-ft9thveeoks7pg7c32kplng7lphlkk8d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT2I_ov4zJvfGegkn2jXjRLaga7uUtafM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "412193976332-ft9thveeoks7pg7c32kplng7lphlkk8d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

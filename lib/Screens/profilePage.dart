@@ -1,0 +1,322 @@
+import 'dart:convert';
+import 'dart:ui';
+
+import 'package:camera/camera.dart';
+import 'package:chuta_app/Model/User.dart' as us;
+import 'package:chuta_app/Screens/AddPatient.dart';
+import 'package:chuta_app/Screens/Camera.dart';
+import 'package:chuta_app/Screens/LoginPage.dart';
+import 'package:chuta_app/Screens/Widgets/Bottum_NavBar.dart';
+import 'package:chuta_app/Screens/Widgets/chart2.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:pie_chart/pie_chart.dart';
+
+import 'ListPatients.dart';
+import 'Widgets/Charts.dart';
+import 'Widgets/appbar_widget.dart';
+import 'Widgets/numbers_widget.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class ProfilePage extends StatefulWidget {
+  @override
+  _BottomNavBarV2State createState() => _BottomNavBarV2State();
+
+}
+class _BottomNavBarV2State extends State<ProfilePage> {
+  int currentIndex = 0;
+  var currentUser = us.User();
+  QuerySnapshot? userProfileSnapshot;
+  getUser() async{
+    final uid = FirebaseAuth.instance.currentUser?.uid;//use a Async-await function to get the data
+    print(uid);
+    final data =  await FirebaseFirestore.instance
+        .collection("users")
+        .where("uid", isEqualTo: uid)
+        .get()
+        .then((value) => {
+      setState(() {
+        userProfileSnapshot = value;
+      })
+    });
+  }
+  signOut() async{
+    print("logout");
+    await FirebaseAuth.instance.signOut();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LoginScreen(),
+        )
+    );
+  }
+  @override
+  void initState() {
+    getUser();
+    super.initState();
+  }
+  setBottomBarIndex(index) {
+    setState(() {
+      currentIndex = index;
+
+    });
+  }
+
+  Widget buildName() => Column(
+    children: [
+      Text(
+        currentUser.fullName.toString(),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+      ),
+      const SizedBox(height: 4),
+      Text(
+        currentUser.email.toString(),
+        style: TextStyle(color: Colors.grey),
+      )
+    ],
+  );
+
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    currentUser.number = userProfileSnapshot?.docs[0].get("number");
+    currentUser.fullName = userProfileSnapshot?.docs[0].get("fullName");
+    currentUser.email = userProfileSnapshot?.docs[0].get("email");
+
+    var data = [
+      ClicksPerYear('2020', 12, Colors.red),
+      ClicksPerYear('2021', 42, Colors.yellow),
+      ClicksPerYear('2022', 75, Colors.green),
+    ];
+
+    var series = [
+      charts.Series(
+        domainFn: (ClicksPerYear clickData, _) => clickData.year,
+        measureFn: (ClicksPerYear clickData, _) => clickData.clicks,
+        colorFn: (ClicksPerYear clickData, _) => clickData.color,
+        id: 'Clicks',
+        data: data,
+      ),
+    ];
+
+    var chart = new charts.BarChart(
+      series,
+      animate: true,
+    );
+
+    Map<String, double> dataMap = {
+      "Stade 1": 18.47,
+      "Stade 2": 31.70,
+      "Stade 3": 30.51,
+      "Stade 4": 20.83,
+    };
+
+    List<Color> colorList = [
+      const Color(0xffD95AF3),
+      const Color(0xff3EE094),
+      const Color(0xff3398F6),
+      const Color(0xffFA4A42),
+      const Color(0xffFE9539)
+    ];
+
+    final gradientList = <List<Color>>[
+      [
+        Color.fromRGBO(223, 250, 92, 1),
+        Color.fromRGBO(129, 250, 112, 1),
+      ],
+      [
+        Color.fromRGBO(129, 182, 205, 1),
+        Color.fromRGBO(91, 253, 199, 1),
+      ],
+      [
+        Color.fromRGBO(175, 63, 62, 1.0),
+        Color.fromRGBO(254, 154, 92, 1),
+      ]
+    ];
+
+      return Scaffold(
+      //backgroundColor: Colors.transparent,
+      appBar: buildAppBar(context),
+      body:  Stack(
+            children: [
+              ListView(
+                physics: BouncingScrollPhysics(),
+                //padding: const EdgeInsets.only(top:70.0),
+                children: [
+                  const SizedBox(height: 24),
+                  buildName(),
+                  const SizedBox(height: 24),
+                  NumbersWidget(),
+                ],
+              ),
+               Padding(
+              padding: EdgeInsets.only(top:165.0),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Center(
+                      child: Text("Les maladies du KPS selon l'année",style:
+                      TextStyle(
+                      fontSize: 15,
+                      color: Colors.black45,
+                    ),),),
+                    Padding(
+                      padding: EdgeInsets.only(left: 18.0,right: 18.0),
+                    child: SizedBox(
+                        height: 200.0,
+                        child: chart,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 18.0),
+                    child: Text("Le pourcentage des stade de la maladie KPS",style:
+                    TextStyle(
+                      fontSize: 15,
+                      color: Colors.black45,
+                    ),),),
+                    Center(
+                      child: PieChart(
+                        dataMap: dataMap,
+                        colorList: colorList,
+                        chartRadius: MediaQuery.of(context).size.width / 2,
+                        animationDuration: const Duration(seconds: 5),
+                        chartValuesOptions: const ChartValuesOptions(
+                            showChartValues: true,
+                            showChartValuesOutside: true,
+                            showChartValuesInPercentage: true,
+                            showChartValueBackground: false),
+
+                        gradientList: gradientList,
+                      ),
+                    ),
+                  ],
+                ),
+              ),),
+              //MyHomePage(),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                child: Container(
+                  width: size.width,
+                  height: 80,
+                  child: Stack(
+                    clipBehavior: Clip.none, children: [
+                    CustomPaint(
+                      size: Size(size.width, 80),
+                      painter: BNBCustomPainter(),
+                    ),
+                    Center(
+                      heightFactor: 0.6,
+                      child: FloatingActionButton(backgroundColor: Color(0xFF90CAF9), child: Icon(Icons.camera), elevation: 0.1, onPressed: () async {
+                        await availableCameras().then(
+                              (value) => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CameraPage(cameras: value,),
+                            ),
+                          ),
+                        );
+                      },),
+                    ),
+                    Container(
+                      width: size.width,
+                      height: 80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.home,
+                              color: currentIndex == 0 ? Color(0xFF90CAF9) : Colors.black,
+                            ),
+                            onPressed: () {
+                              setBottomBarIndex(0);
+                            },
+                            splashColor: Colors.white,
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                Icons.person_add_alt_1_sharp,
+                                color: currentIndex == 1 ? Color(0xFF90CAF9) : Colors.black,
+                              ),
+                              onPressed: () {
+                                setBottomBarIndex(1);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AddPatient(),
+                                    )
+                                );
+                              }),
+
+                          Container(
+                            width: size.width * 0.20,
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                Icons.list,
+                                color: currentIndex == 2 ? Color(0xFF90CAF9) : Colors.black,
+                              ),
+                              onPressed: () {
+                                setBottomBarIndex(2);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ListPatient(),
+                                    )
+                                );
+                              }),
+                          IconButton(
+                              icon: Icon(
+                                Icons.login_outlined,
+                                color: currentIndex == 3 ? Color(0xFF90CAF9) : Colors.black,
+                              ),
+                              onPressed: () {
+                                setBottomBarIndex(3);
+                                signOut();
+                              }),
+                        ],
+                      ),
+                    )
+                  ],
+                  ),
+                ),
+              )
+            ],
+          ),
+    );
+  }
+}
+
+class BNBCustomPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = new Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+
+    Path path = Path();
+    path.moveTo(0, 20); // Start
+    path.quadraticBezierTo(size.width * 0.20, 0, size.width * 0.35, 0);
+    path.quadraticBezierTo(size.width * 0.40, 0, size.width * 0.40, 20);
+    path.arcToPoint(Offset(size.width * 0.60, 20), radius: Radius.circular(20.0), clockwise: false);
+    path.quadraticBezierTo(size.width * 0.60, 0, size.width * 0.65, 0);
+    path.quadraticBezierTo(size.width * 0.80, 0, size.width, 20);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.lineTo(0, 20);
+    canvas.drawShadow(path, Colors.black, 5, true);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
+
+}

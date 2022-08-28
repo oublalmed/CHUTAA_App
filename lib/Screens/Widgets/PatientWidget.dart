@@ -1,5 +1,9 @@
 import 'package:chuta_app/Model/Patient.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatientWidget extends StatelessWidget {
   final Patient patient;
@@ -12,6 +16,35 @@ class PatientWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
     );
+  }
+
+  Future loadFile() async {
+    print("now show off time gggggggggggggg:");
+    print(patient.patientId);
+
+    final uid = FirebaseAuth.instance.currentUser?.uid;//use a Async-await function to get the data
+    QuerySnapshot images = await FirebaseFirestore.instance.collection("users")
+        .doc(uid).collection("patients").doc(patient.patientId).collection("images").get();
+    for (var imageDoc in images.docs ) {
+      final fileName = imageDoc.get("imageFile");
+      final destination = 'images/$fileName';
+      try {
+        final ref = firebase_storage.FirebaseStorage.instance
+            .ref(destination);
+        await ref.getDownloadURL().then((value) => print(value)); // !!!!!!!
+        // it prints the url in console,
+        // try to display images in a page
+      } catch (e) {
+        print('error occured');
+      }
+      // setState(() {
+      //   print(image.toString());
+      //   Images.add(image);
+      // });
+    }
+
+
+
   }
 
   @override
@@ -52,6 +85,15 @@ class PatientWidget extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              RaisedButton(
+                child: Text("Click Here", style: TextStyle(fontSize: 20),),
+                onPressed: loadFile,
+                color: Colors.red,
+                textColor: Colors.yellow,
+                padding: EdgeInsets.all(8.0),
+                splashColor: Colors.grey,
+              )
+              ,
               Padding(
                 padding: EdgeInsets.all(20),
                 child: Text(

@@ -3,30 +3,39 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:chuta_app/Model/Patient.dart';
 import 'package:chuta_app/Model/User.dart';
+import 'package:chuta_app/Screens/Camera.dart';
 import 'package:chuta_app/Screens/ListPatients.dart';
 import 'package:chuta_app/Screens/Widgets/AddPatientWidget.dart';
 import 'package:chuta_app/Screens/profilePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'AddPatient.dart';
 import 'Widgets/appbar_widget.dart';
+import 'package:path/path.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 
 class CameraPage extends StatefulWidget {
+  final Patient patient;
   final List<CameraDescription>? cameras;
-  const CameraPage({this.cameras, Key? key}) : super(key: key);
+  const CameraPage({this.cameras, Key? key, required this.patient}) : super(key: key);
   @override
-  _BottomNavBarV2State createState() => _BottomNavBarV2State();
+  _BottomNavBarV2State createState() => _BottomNavBarV2State(this.patient);
 }
 
-class _BottomNavBarV2State extends State<CameraPage> {
-  int currentIndex = 0;
 
+class _BottomNavBarV2State extends State<CameraPage> {
+  final Patient patient;
+  _BottomNavBarV2State(this.patient);
+  int currentIndex = 0;
+  firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
   late CameraController controller;
-  XFile? pictureFile;
 
   File? imageFile;
 
@@ -56,6 +65,31 @@ class _BottomNavBarV2State extends State<CameraPage> {
     controller.dispose();
     super.dispose();
   }
+
+  Future uploadFile() async {
+    if (imageFile == null) return;
+    print("heeeeeeeeeeeeeeere :");
+    print(patient.patientId);
+    final fileName = basename(imageFile!.path);
+    var uuid = Uuid();
+    var imageId = uuid.v1();
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    FirebaseFirestore.instance.collection('users').doc(uid).collection("patients").doc(patient.patientId).collection("images").doc(imageId).set({
+      'imageId': imageId,
+      'imageFile': fileName,
+    });
+
+    final destination = 'images/$fileName';
+
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref(destination);
+      await ref.putFile(imageFile!);
+    } catch (e) {
+      print('error occured');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +124,8 @@ class _BottomNavBarV2State extends State<CameraPage> {
                 ),
                 Center(
                   heightFactor: 0.6,
-                  child: FloatingActionButton(backgroundColor: Color(0xFF90CAF9), child: Icon(Icons.camera), elevation: 0.1, onPressed: ()=> getImage(source: ImageSource.camera) ),
+                  child: FloatingActionButton(backgroundColor: Color(0xFF90CAF9), child: Icon(Icons.camera), elevation: 0.1,
+                      onPressed: ()=> getImage(source: ImageSource.camera) ),
                 ),
                 if (imageFile != null)
                   Image.network(
@@ -174,13 +209,15 @@ class _BottomNavBarV2State extends State<CameraPage> {
   void getImage({required ImageSource source}) async {
 
     final file = await ImagePicker().pickImage(source: source);
-
-    if(file?.path != null){
       setState((){
-        imageFile = File(file!.path);
+        if (file != null){
+          imageFile = File(file!.path);
+          uploadFile();
+        }else{
+          print('No image selected.');
+        }
       });
     }
-  }
 }
 
 

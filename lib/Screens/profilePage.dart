@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:chuta_app/Model/Patient.dart';
 import 'package:chuta_app/Model/User.dart' as us;
 import 'package:chuta_app/Screens/AddPatient.dart';
 import 'package:chuta_app/Screens/Camera.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:pie_chart/pie_chart.dart';
+import 'Camera.dart' as camera;
 
 import 'ListPatients.dart';
 import 'Widgets/Charts.dart';
@@ -27,9 +29,17 @@ class ProfilePage extends StatefulWidget {
 
 }
 class _BottomNavBarV2State extends State<ProfilePage> {
+  final Patient patient = Patient();
   int currentIndex = 0;
   var currentUser = us.User();
   QuerySnapshot? userProfileSnapshot;
+  QuerySnapshot? query2020;
+  QuerySnapshot? query2021;
+  QuerySnapshot? query2022;
+  int query2020len = 0;
+  int query2021len = 0;
+  int query2022len = 0;
+
   getUser() async{
     final uid = FirebaseAuth.instance.currentUser?.uid;//use a Async-await function to get the data
     print(uid);
@@ -41,6 +51,42 @@ class _BottomNavBarV2State extends State<ProfilePage> {
       setState(() {
         userProfileSnapshot = value;
       })
+    });
+    final patients2020 =  await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("patients")
+        .where("year", isEqualTo: "2020")
+        .get()
+        .then((value) => {
+            setState(() {
+              query2020 = value;
+              query2020len = query2020!.size;
+            })
+    });
+    final patients2021 =  await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("patients")
+        .where("year", isEqualTo: "2021")
+        .get()
+        .then((value) => {
+            setState(() {
+              query2021 = value;
+              query2021len = query2021!.size;
+            })
+    });
+    final patients2022 =  await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("patients")
+        .where("year", isEqualTo: "2022")
+        .get()
+        .then((value) => {
+            setState(() {
+              query2022 = value;
+              query2022len = query2022!.size;
+            })
     });
   }
   signOut() async{
@@ -87,10 +133,11 @@ class _BottomNavBarV2State extends State<ProfilePage> {
     currentUser.fullName = userProfileSnapshot?.docs[0].get("fullName");
     currentUser.email = userProfileSnapshot?.docs[0].get("email");
 
+
     var data = [
-      ClicksPerYear('2020', 12, Colors.red),
-      ClicksPerYear('2021', 42, Colors.yellow),
-      ClicksPerYear('2022', 75, Colors.green),
+      ClicksPerYear('2020', query2020len, Colors.red),
+      ClicksPerYear('2021', query2021len, Colors.yellow),
+      ClicksPerYear('2022', query2022len, Colors.green),
     ];
 
     var series = [
@@ -216,7 +263,7 @@ class _BottomNavBarV2State extends State<ProfilePage> {
                               (value) => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CameraPage(cameras: value,),
+                              builder: (context) => camera.CameraPage(cameras: value, patient: patient,),
                             ),
                           ),
                         );

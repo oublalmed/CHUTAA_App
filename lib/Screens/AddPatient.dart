@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:camera/camera.dart';
+import 'package:chuta_app/Model/Patient.dart';
 import 'package:chuta_app/Model/User.dart';
 import 'package:chuta_app/Screens/Camera.dart';
 import 'package:chuta_app/Screens/LoginPage.dart';
@@ -8,6 +9,7 @@ import 'package:chuta_app/Screens/Widgets/AddPatientWidget.dart';
 import 'package:chuta_app/Screens/profilePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'Camera.dart' as camera;
 
 import 'ListPatients.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,6 +22,7 @@ class AddPatient extends StatefulWidget {
 }
 
 class _BottomNavBarV2State extends State<AddPatient> {
+  final Patient patient = Patient();
   int currentIndex = 0;
   signOut() async{
     print("logout");
@@ -65,7 +68,7 @@ class _BottomNavBarV2State extends State<AddPatient> {
                           (value) => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CameraPage(cameras: value,),
+                          builder: (context) => camera.CameraPage(cameras: value, patient: patient),
                         ),
                       ),
                     );

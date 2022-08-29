@@ -1,4 +1,5 @@
 import 'package:chuta_app/Model/Patient.dart';
+import 'package:chuta_app/Screens/GalleryPatient.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_core/firebase_core.dart';
@@ -85,15 +86,6 @@ class PatientWidget extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              RaisedButton(
-                child: Text("Click Here", style: TextStyle(fontSize: 20),),
-                onPressed: loadFile,
-                color: Colors.red,
-                textColor: Colors.yellow,
-                padding: EdgeInsets.all(8.0),
-                splashColor: Colors.grey,
-              )
-              ,
               Padding(
                 padding: EdgeInsets.all(20),
                 child: Text(
@@ -192,15 +184,27 @@ class PatientWidget extends StatelessWidget {
                     blurRadius: 50,
                     color: Color(0xffEEEEEE)
                 ),
+
               ],
             ),
-            child: Text(
+             child: GestureDetector(
+              child: Text(
               "Voir dossier",
               style: TextStyle(
                 fontSize: 18,
                   color: Colors.white
               ),
             ),
+               onTap: () {
+                 // Write Tap Code Here.
+                 Navigator.push(
+                     context,
+                     MaterialPageRoute(
+                       builder: (context) => GalleryPatient(),
+                     )
+                 );
+               },
+             ),
           ),),
         ],
       ),

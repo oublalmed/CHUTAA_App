@@ -170,21 +170,6 @@ class _BottomNavBarV2State extends State<ProfilePage> {
       const Color(0xffFE9539)
     ];
 
-    final gradientList = <List<Color>>[
-      [
-        Color.fromRGBO(223, 250, 92, 1),
-        Color.fromRGBO(129, 250, 112, 1),
-      ],
-      [
-        Color.fromRGBO(129, 182, 205, 1),
-        Color.fromRGBO(91, 253, 199, 1),
-      ],
-      [
-        Color.fromRGBO(175, 63, 62, 1.0),
-        Color.fromRGBO(254, 154, 92, 1),
-      ]
-    ];
-
       return Scaffold(
       //backgroundColor: Colors.transparent,
       appBar: buildAppBar(context),
@@ -194,9 +179,9 @@ class _BottomNavBarV2State extends State<ProfilePage> {
                 physics: BouncingScrollPhysics(),
                 //padding: const EdgeInsets.only(top:70.0),
                 children: [
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   buildName(),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   NumbersWidget(),
                 ],
               ),
@@ -206,26 +191,13 @@ class _BottomNavBarV2State extends State<ProfilePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Center(
-                      child: Text("Les maladies du KPS selon l'année",style:
-                      TextStyle(
-                      fontSize: 15,
-                      color: Colors.black45,
-                    ),),),
-                    Padding(
-                      padding: EdgeInsets.only(left: 18.0,right: 18.0),
-                    child: SizedBox(
-                        height: 200.0,
-                        child: chart,
-                      ),
-                    ),
                     Padding(
                       padding: EdgeInsets.only(top: 18.0),
-                    child: Text("Le pourcentage des stade de la maladie KPS",style:
-                    TextStyle(
-                      fontSize: 15,
-                      color: Colors.black45,
-                    ),),),
+                      child: Text("Le pourcentage des stade de la maladie KPS",style:
+                      TextStyle(
+                        fontSize: 15,
+                        color: Colors.black45,
+                      ),),),
                     Center(
                       child: PieChart(
                         dataMap: dataMap,
@@ -238,7 +210,19 @@ class _BottomNavBarV2State extends State<ProfilePage> {
                             showChartValuesInPercentage: true,
                             showChartValueBackground: true),
 
-                        gradientList: gradientList,
+                      ),
+                    ),
+                    Center(
+                      child: Text("Les maladies du KPS selon l'année",style:
+                      TextStyle(
+                      fontSize: 15,
+                      color: Colors.black45,
+                    ),),),
+                    Padding(
+                      padding: EdgeInsets.only(left: 18.0,right: 18.0),
+                    child: SizedBox(
+                        height: 200.0,
+                        child: chart,
                       ),
                     ),
                   ],
@@ -258,16 +242,7 @@ class _BottomNavBarV2State extends State<ProfilePage> {
                     ),
                     Center(
                       heightFactor: 0.6,
-                      child: FloatingActionButton(backgroundColor: Color(0xFF90CAF9), child: Icon(Icons.camera), elevation: 0.1, onPressed: () async {
-                        await availableCameras().then(
-                              (value) => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => camera.CameraPage(cameras: value, patient: patient,),
-                            ),
-                          ),
-                        );
-                      },),
+                      child: FloatingActionButton(backgroundColor: Color(0xFF90CAF9), child: Icon(Icons.camera), elevation: 0.1, onPressed: () {},),
                     ),
                     Container(
                       width: size.width,

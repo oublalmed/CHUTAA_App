@@ -168,7 +168,7 @@ class PatientWidget extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         child: Container(
             alignment: Alignment.center,
-            margin: EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 100),
+            margin: EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 70),
             padding: EdgeInsets.only(left: 20, right: 20),
             height: 54,
             decoration: BoxDecoration(

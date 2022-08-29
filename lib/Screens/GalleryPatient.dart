@@ -28,27 +28,7 @@ List<ImageDetails> _images = [
   ImageDetails(
     imagePath: 'assets/images/1.jpg',
   ),
-  ImageDetails(
-    imagePath: 'images/10.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'images/11.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'images/12.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'images/13.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'images/14.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'images/15.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'images/16.jpg',
-  )
+
 ];
 
 class GalleryPatient extends StatelessWidget {

@@ -63,15 +63,8 @@ class _BottomNavBarV2State extends State<AddPatient> {
                 ),
                 Center(
                   heightFactor: 0.6,
-                  child: FloatingActionButton(backgroundColor: Color(0xFF90CAF9), child: Icon(Icons.camera), elevation: 0.1, onPressed: () async {
-                    await availableCameras().then(
-                          (value) => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => camera.CameraPage(cameras: value, patient: patient),
-                        ),
-                      ),
-                    );
+                  child: FloatingActionButton(backgroundColor: Color(0xFF90CAF9), child: Icon(Icons.camera), elevation: 0.1, onPressed: ()  {
+
                   }),
                 ),
                 Container(

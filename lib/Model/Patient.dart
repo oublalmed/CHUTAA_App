@@ -21,15 +21,5 @@ class Patient {
     this.state
   });
 
-  //  Patient(String id, String name, String email, String number, String birthday, String consultation, String numFile, String state){
-  //   this.patientId =id;
-  //   this.name = name;
-  //   this.email = email;
-  //   this.number =number;
-  //   this.birthday = birthday;
-  //   this.consultation = consultation;
-  //   this.numFile = numFile;
-  //   this.state = state;
-  // }
 
 }

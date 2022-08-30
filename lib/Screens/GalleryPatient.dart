@@ -1,39 +1,15 @@
+
+import 'package:chuta_app/Model/ImageDetails.dart';
 import 'package:flutter/material.dart';
 
-List<ImageDetails> _images = [
-  ImageDetails(
-    imagePath: 'assets/images/1.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'assets/images/1.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'assets/images/1.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'assets/images/1.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'assets/images/1.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'assets/images/1.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'assets/images/1.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'assets/images/1.jpg',
-  ),
-  ImageDetails(
-    imagePath: 'assets/images/1.jpg',
-  ),
-
-];
 
 class GalleryPatient extends StatelessWidget {
+  final List<ImageDetails> pictures;
+  GalleryPatient(this.pictures);
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Color(0xFF90CAF9),
       body: SafeArea(
@@ -79,19 +55,20 @@ class GalleryPatient extends StatelessWidget {
                       onPressed: () {  },
                       child: Hero(
                         tag: 'logo$index',
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            image: DecorationImage(
-                              image: AssetImage(_images[index].imagePath),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
+                        // child: Container(
+                        //   decoration: BoxDecoration(
+                        //     borderRadius: BorderRadius.circular(15),
+                        //     image: DecorationImage(
+                        //       image: AssetImage(_images[index].imagePath),
+                        //       fit: BoxFit.cover,
+                        //     ),
+                        //   ),
+                        // ),
+                        child: Image.network(pictures[index].imagePath.toString()),
                       ),
                     );
                   },
-                  itemCount: _images.length,
+                  itemCount: pictures.length,
               ),
             ),
             )
@@ -102,10 +79,3 @@ class GalleryPatient extends StatelessWidget {
   }
 }
 
-class ImageDetails {
-  final String imagePath;
-
-  ImageDetails({
-    required this.imagePath,
-});
-}

@@ -1,14 +1,19 @@
+import 'dart:math';
+
 import 'package:chuta_app/Model/Patient.dart';
+import 'package:chuta_app/Model/ImageDetails.dart';
 import 'package:chuta_app/Screens/GalleryPatient.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class PatientWidget extends StatelessWidget {
   final Patient patient;
   PatientWidget(this.patient);
+  List<ImageDetails> pictures = [];
+
   Widget textfield({@required hintText}) {
     return Material(
       elevation: 4,
@@ -20,8 +25,6 @@ class PatientWidget extends StatelessWidget {
   }
 
   Future loadFile() async {
-    print("now show off time gggggggggggggg:");
-    print(patient.patientId);
 
     final uid = FirebaseAuth.instance.currentUser?.uid;//use a Async-await function to get the data
     QuerySnapshot images = await FirebaseFirestore.instance.collection("users")
@@ -32,24 +35,20 @@ class PatientWidget extends StatelessWidget {
       try {
         final ref = firebase_storage.FirebaseStorage.instance
             .ref(destination);
-        await ref.getDownloadURL().then((value) => print(value)); // !!!!!!!
-        // it prints the url in console,
-        // try to display images in a page
+        await ref.getDownloadURL().then((value) =>
+            pictures.add(ImageDetails(imagePath: value.toString()))
+        );
+
       } catch (e) {
         print('error occured');
       }
-      // setState(() {
-      //   print(image.toString());
-      //   Images.add(image);
-      // });
     }
-
-
-
   }
+
 
   @override
   Widget build(BuildContext context) {
+    loadFile();
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -200,7 +199,7 @@ class PatientWidget extends StatelessWidget {
                  Navigator.push(
                      context,
                      MaterialPageRoute(
-                       builder: (context) => GalleryPatient(),
+                       builder: (context) => GalleryPatient(pictures),
                      )
                  );
                },

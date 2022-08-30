@@ -1,15 +1,18 @@
+import 'package:chuta_app/Screens/Widgets/numbers_widget.dart';
 import 'package:flutter/material.dart';
 
 class NumbersWidget extends StatelessWidget {
+  final int patientslen ;
+  NumbersWidget(this.patientslen);
   @override
   Widget build(BuildContext context) => Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
       buildButton(context, '4', 'Ranking'),
       buildDivider(),
-      buildButton(context, '35', 'Patients'),
+      buildButton(context, patientslen.toString(), 'Patients'),
       buildDivider(),
-      buildButton(context, '8', 'Rendez-vous'),
+      buildButton(context,  patientslen.toString(), 'Rendez-vous'),
     ],
   );
   Widget buildDivider() => Container(

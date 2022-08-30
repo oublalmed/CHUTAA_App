@@ -33,12 +33,23 @@ class _BottomNavBarV2State extends State<ProfilePage> {
   int currentIndex = 0;
   var currentUser = us.User();
   QuerySnapshot? userProfileSnapshot;
+  QuerySnapshot? querypatients;
+  int querypatientslen = 0;
   QuerySnapshot? query2020;
   QuerySnapshot? query2021;
   QuerySnapshot? query2022;
   int query2020len = 0;
   int query2021len = 0;
   int query2022len = 0;
+
+  QuerySnapshot? querystage1;
+  QuerySnapshot? querystage2;
+  QuerySnapshot? querystage3;
+  QuerySnapshot? querystage4;
+  int querystage1len = 0;
+  int querystage2len = 0;
+  int querystage3len = 0;
+  int querystage4len = 0;
 
   getUser() async{
     final uid = FirebaseAuth.instance.currentUser?.uid;//use a Async-await function to get the data
@@ -52,7 +63,7 @@ class _BottomNavBarV2State extends State<ProfilePage> {
         userProfileSnapshot = value;
       })
     });
-    final patients2020 =  await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection("users")
         .doc(uid)
         .collection("patients")
@@ -64,7 +75,7 @@ class _BottomNavBarV2State extends State<ProfilePage> {
               query2020len = query2020!.size;
             })
     });
-    final patients2021 =  await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection("users")
         .doc(uid)
         .collection("patients")
@@ -76,7 +87,7 @@ class _BottomNavBarV2State extends State<ProfilePage> {
               query2021len = query2021!.size;
             })
     });
-    final patients2022 =  await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection("users")
         .doc(uid)
         .collection("patients")
@@ -88,6 +99,67 @@ class _BottomNavBarV2State extends State<ProfilePage> {
               query2022len = query2022!.size;
             })
     });
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("patients")
+        .where("state", isEqualTo: "1")
+        .get()
+        .then((value) => {
+            setState(() {
+              querystage1 = value;
+              querystage1len = querystage1!.size;
+            })
+    });
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("patients")
+        .where("state", isEqualTo: "2")
+        .get()
+        .then((value) => {
+            setState(() {
+              querystage2 = value;
+              querystage2len = querystage2!.size;
+            })
+    });
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("patients")
+        .where("state", isEqualTo: "3")
+        .get()
+        .then((value) => {
+            setState(() {
+              querystage3 = value;
+              querystage3len = querystage3!.size;
+            })
+    });
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("patients")
+        .where("state", isEqualTo: "4")
+        .get()
+        .then((value) => {
+            setState(() {
+              querystage4 = value;
+              querystage4len = querystage4!.size;
+            })
+    });
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("patients")
+        .get()
+        .then((value) => {
+            setState(() {
+              querypatients = value;
+              querypatientslen = querypatients!.size;
+            })
+    });
+  
+    
   }
   signOut() async{
     print("logout");
@@ -156,10 +228,10 @@ class _BottomNavBarV2State extends State<ProfilePage> {
     );
 
     Map<String, double> dataMap = {
-      "Stade 1": 18.47,
-      "Stade 2": 31.70,
-      "Stade 3": 30.51,
-      "Stade 4": 20.83,
+      "Stade 1": querystage1len.toDouble(),
+      "Stade 2": querystage2len.toDouble(),
+      "Stade 3": querystage3len.toDouble(),
+      "Stade 4": querystage4len.toDouble(),
     };
 
     List<Color> colorList = [
@@ -182,7 +254,7 @@ class _BottomNavBarV2State extends State<ProfilePage> {
                   const SizedBox(height: 20),
                   buildName(),
                   const SizedBox(height: 20),
-                  NumbersWidget(),
+                  NumbersWidget(querypatientslen),
                 ],
               ),
                Padding(

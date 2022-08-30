@@ -47,7 +47,7 @@ class InitState extends State<AddPatientWidget> {
         'birthday': birthday,
         'numFile': numFile,
         'year' : "202" + consultation[9] ,
-        'state': state
+        'state': 0
       });
       print("Created");
       Navigator.pushReplacement(
